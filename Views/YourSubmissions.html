@@ -1,0 +1,12 @@
+<table ng-controller="SubmissionCtrl">
+<tr>
+    <th>Submitted On</th>
+    <th>Claim</th>
+</tr>
+<tr ng-repeat="submission in submissions">
+    <td>{{submission.SubmittedBy}}</td>
+    <td>{{submission.FormattedSubmittedOn}}</td>
+    <td><input type="checkbox"></td>
+</tr>
+
+</table>
