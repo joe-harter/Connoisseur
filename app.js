@@ -9,23 +9,40 @@ app.controller('Router', function($scope, $window, $location, $http) {
 
 });
 
-app.controller('SubmissionCtrl', function($scope, $http) {
+app.controller('SubmissionCtrl', function($scope, $modal, $http) {
+
+    var modalInstance = $modal.open({
+        templateUrl: 'views/ProfileModal.html',
+        controller: ModalInstanceCtrl,
+        resolve: {
+            items: function () {
+                return 0;
+            }
+        }
+    });
+debugger
+    modalInstance.result.then(function (selectedItem) {
+        $scope.selected = selectedItem;
+        }, function () {
+            $log.info('Modal dismissed at: ' + new Date());
+    });
+
     var httpRequest = $http.get('http://localhost:8080/GetSubmissions').success(function(data, status) {
         data.forEach(function(submission) {
+
             addFormattedDate(submission);
         });
         $scope.submissions = data;
     });
-
-    this.addFormattedDate = function(submission)
-    {
-        submission.SubmittedOnDate = new Date(submission.SubmittedOn);
-        submission.FormattedSubmittedOn = submission.SubmittedOnDate.getUTCFullYear() +"/"+
-            ("0" + (submission.SubmittedOnDate.getUTCMonth()+1)).slice(-2) +"/"+
-            ("0" + submission.SubmittedOnDate.getUTCDate()).slice(-2) + " " +
-            ("0" + submission.SubmittedOnDate.getUTCHours()).slice(-2) + ":" +
-            ("0" + submission.SubmittedOnDate.getUTCMinutes()).slice(-2) + ":" +
-            ("0" + submission.SubmittedOnDate.getUTCSeconds()).slice(-2);
-    }
-
 });
+
+var ModalInstanceCtrl = function ($scope, $modalInstance, items) {
+
+    $scope.ok = function () {
+        $modalInstance.close($scope.selected.item);
+    };
+
+    $scope.cancel = function () {
+        $modalInstance.dismiss('cancel');
+    };
+};
